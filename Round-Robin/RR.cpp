@@ -32,8 +32,12 @@ int main()
 	// Main loop
 	for (Process* proc = ReadyQueue[0]; proc != nullptr; proc = ReadyQueue[0])
 	{
-
 		DequeueReady();
+		proc->BurstTime -= TIME_SLICE;
+		if(proc->BurstTime > 0.0f)
+		{
+			EnqueueReady(proc->ID);
+		}
 	}
 	printf("Hello world!");
 	return 0;
