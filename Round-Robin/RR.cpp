@@ -19,6 +19,7 @@ int QueueLast = -1;
 
 void InitProcesses(Process*);
 void EnqueueReady(int);
+void DequeueReady();
 
 int main()
 {
@@ -26,6 +27,13 @@ int main()
 	for(int Index = 0; Index < PROC_COUNT; ++Index)
 	{
 		EnqueueReady(Index);
+	}
+
+	// Main loop
+	for (Process* proc = ReadyQueue[0]; proc != nullptr; proc = ReadyQueue[0])
+	{
+
+		DequeueReady();
 	}
 	printf("Hello world!");
 	return 0;
@@ -59,4 +67,17 @@ void EnqueueReady(int Index)
 	}
 
 	ReadyQueue[QueueLast] = &Procs[Index];
+}
+
+void DequeueReady()
+{
+	for(int Index = 1; Index < QueueLast + 1; ++Index)
+	{
+		ReadyQueue[Index - 1] = ReadyQueue[Index];
+	}
+	for (int Index = QueueLast; Index < PROC_COUNT; ++Index)
+	{
+		ReadyQueue[Index] = nullptr;
+	}
+	--QueueLast;
 }
