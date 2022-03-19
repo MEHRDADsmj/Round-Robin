@@ -20,6 +20,7 @@ int QueueLast = -1;
 void InitProcesses(Process*);
 void EnqueueReady(int);
 void DequeueReady();
+void ConsumeProcess(Process*);
 
 int main()
 {
@@ -29,17 +30,29 @@ int main()
 		EnqueueReady(Index);
 	}
 
+	float WaitingTime[PROC_COUNT];
+	float TurningTime[PROC_COUNT];
+	float AWT = 0.0f;
+	float ATT = 0.0f;
+
 	// Main loop
 	for (Process* proc = ReadyQueue[0]; proc != nullptr; proc = ReadyQueue[0])
 	{
 		DequeueReady();
-		proc->BurstTime -= TIME_SLICE;
-		if(proc->BurstTime > 0.0f)
-		{
-			EnqueueReady(proc->ID);
-		}
+		// Do things here
+		
+
+		ConsumeProcess(proc);
 	}
-	printf("Hello world!");
+	AWT /= PROC_COUNT;
+	ATT /= PROC_COUNT;
+
+	for (int Index = 0; Index < PROC_COUNT; ++Index)
+	{
+		printf("%s\tWT = %.2f | TT = %.2f\n", Procs[Index].Name,
+			WaitingTime[Index], TurningTime[Index]);
+	}
+	printf("AWT = %f\nATT = %f\n", AWT, ATT);
 	return 0;
 }
 
@@ -84,4 +97,13 @@ void DequeueReady()
 		ReadyQueue[Index] = nullptr;
 	}
 	--QueueLast;
+}
+
+void ConsumeProcess(Process* proc)
+{
+	proc->BurstTime -= TIME_SLICE;
+	if (proc->BurstTime > 0.0f)
+	{
+		EnqueueReady(proc->ID);
+	}
 }
