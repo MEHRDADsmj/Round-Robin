@@ -18,9 +18,15 @@ Process* ReadyQueue[PROC_COUNT];
 int QueueLast = -1;
 
 void InitProcesses(Process*);
+void EnqueueReady(int);
 
 int main()
 {
+	InitProcesses(Procs);
+	for(int Index = 0; Index < PROC_COUNT; ++Index)
+	{
+		EnqueueReady(Index);
+	}
 	printf("Hello world!");
 	return 0;
 }
@@ -41,4 +47,16 @@ void InitProcesses(Process* procs)
 		_itoa_s(Index, Num, 10);
 		strcat_s(procs[Index].Name, Num);
 	}
+}
+
+void EnqueueReady(int Index)
+{
+	++QueueLast;
+	if(QueueLast >= PROC_COUNT)
+	{
+		printf("Queue overload");
+		exit(-1);
+	}
+
+	ReadyQueue[QueueLast] = &Procs[Index];
 }
